@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "scrape:tutorial": "node src/tutorial_get_wikipedia.js",
+    "scrape:tutorial:cheerio": "node src/tutorial_get_to_cheerio.js"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.10",
+    "nightmare": "^3.0.2",
+    "puppeteer": "^13.5.1",
+    "request-promise": "^4.2.6"
+  }
+}
