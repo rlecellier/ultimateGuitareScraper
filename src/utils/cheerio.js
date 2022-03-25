@@ -15,12 +15,50 @@ const getArtistUrl = (html, searchArtist) => {
   return `${BASE_URL}${artistUri}`
 }
 
+const getParent = ($node, nbParents) => {
+  let $searchNode = $node
+  for (let i = 0; i < nbParents; i++) {
+    $searchNode = $searchNode.parent()
+  }
+  return $searchNode
+}
+
+const getSongDetails = ($, $link) => {
+  const $row = getParent($link, 5)
+  let score, type
+  $row.find('div').each((i, el) => {
+    if (i) {
+      if (!score && !isNaN($(el).text())) {
+        score = $(el).text()
+      } else {
+        type = $(el).text()
+      }
+    }
+  })
+  return {
+    'name': $link.text(),
+    score,
+    type
+  }
+}
+
 const getSongUrl = (html, searchSong) => {
   const $ = cheerio.load(html)
   let songUrl = ''
   $('a').each((i, link) => {
+    let bestScore
     if (nrmStr($(link).text()) === nrmStr(searchSong)) {
-      songUrl = $(link).attr('href')
+      const songDetails = getSongDetails($, $(link))
+      if (
+        songDetails.type === 'chords'
+        && (
+          !bestScore
+          || bestScore < songDetails.score
+        )
+      ) {
+        bestScore = songDetails.score
+        songUrl = $(link).attr('href')
+      }
     }
   })
   return songUrl
